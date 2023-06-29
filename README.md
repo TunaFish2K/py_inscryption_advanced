@@ -32,7 +32,7 @@ output - 存储最终的可打印PDF,来自于牌堆\
     "cost": 0,
     "abilities":[]
 }
-```\
+```
 它们的含义应该清晰明了。\
 有这几个需要注意的点：\
 "front","back"与"abilities"分别代表卡牌的正面底座,背面和能力，它们的名字在py_inscryption/builtin_resources里找到。程序会自动帮你加上前缀。\
