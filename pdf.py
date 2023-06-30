@@ -18,7 +18,14 @@ def n2t(l:list):
     ]
 
 def reverse_cards(cards:list) -> list:
-    return [cards[2],cards[1],cards[0]]
+    cards = cards[:]
+    for index,content in enumerate(cards):
+        if len(content) < 3:
+            for i in range(3-len(content)):
+                content.append(None)
+        content.reverse()
+    return cards
+            
 
 def card_page(can,cards:list) -> None:
     """

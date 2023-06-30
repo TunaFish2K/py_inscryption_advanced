@@ -80,7 +80,7 @@ def deck_pdf(name:str):
        
     if counter % 9 > 0:
         pdf.card_page(can,pdf.n2t(page))
-        pdf.card_page(can,pdf.n2t(back_page))
+        pdf.card_page(can,pdf.reverse_cards(pdf.n2t(back_page)))
     can.save()
 
 if __name__ == "__main__":
