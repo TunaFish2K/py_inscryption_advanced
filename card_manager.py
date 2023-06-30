@@ -15,7 +15,9 @@ class StaticCard:
         health:int,  # -1 = no show
         abilities:list, # of string
         cost_type:str, # blood or bone
-        cost:int
+        cost:int,
+        sacrisfied_abilities:list,
+        decals:list
         ) -> None:
         self.front = front
         self.back = back
@@ -26,6 +28,8 @@ class StaticCard:
         self.abilities = abilities
         self.cost_type = cost_type
         self.cost = cost
+        self.sacrisfied_abilities = sacrisfied_abilities
+        self.decals = decals
     
     def serialize(self):
         return {
@@ -37,7 +41,9 @@ class StaticCard:
             "health": self.health,
             "abilities": self.abilities,
             "cost_type": self.cost_type,
-            "cost": self.cost
+            "cost": self.cost,
+            "sacrisfied_abilities": self.sacrisfied_abilities,
+            "decals": self.decals
         }
     
     @classmethod
@@ -51,13 +57,21 @@ class StaticCard:
             data["health"],
             data["abilities"],
             data["cost_type"],
-            data["cost"]
+            data["cost"],
+            data.get("sacrisfied_abilities") or [][:],
+            data.get("decals") or [][:]
         )
 
     def toCard(self,card_location:str) -> Card:
         ab = []
+        sab = []
+        d = []
         for i in self.abilities:
             ab.append(getAbility(i))
+        for i in self.sacrisfied_abilities:
+            sab.append(getAbility(i))
+        for i in self.decals:
+            d.append(getDecal(i))
         return Card(
             getFront(self.front),getBack(self.back),getBeast(os.path.realpath(
                 os.path.join(card_location,"textures",self.beast)
@@ -65,7 +79,9 @@ class StaticCard:
             self.name,
             self.damage, self.health,
             ab,
+            sab,
             getCost(self.cost_type,self.cost),
+            d,
             fonts["chapter1_zh_cn"], fonts["chapter1"]
         )
 

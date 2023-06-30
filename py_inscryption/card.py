@@ -39,7 +39,22 @@ def generate_proper_text_image(name:str,font_zh,font_en,default_size=20, max_wid
         image = DrawableText(n,font_size,font)
     else: raise ValueError("unsupported language, only zh-cn and en-us are supported")
     return image
-    
+
+def coolAbility(ability:Image.Image,size=(40,40)):
+    # ahh cool
+    ability = ability.copy().resize(size)
+    img_array = ability.load()
+    width, height = ability.size
+    for x in range(width):
+        for y in range(height):
+            color = img_array[x,y]
+            if (
+                color[0] == 0 and
+                color[1] == 0 and
+                color[2] == 0
+            ):
+                img_array[x,y] = (170,238,170,0)
+    return ability
 # parts
 
 def loadImage(type:str,name:str,target:str="./builtin_resources/textures/"):
@@ -49,6 +64,9 @@ def loadImage(type:str,name:str,target:str="./builtin_resources/textures/"):
     name = name + ".png"
     image_path = os.path.join(target,type,name)
     return Image.open(image_path).convert("RGBA")
+
+# cool abilities xd
+sacrisfied_abilitiy = loadImage(type=os.path.join("abilities","special"),name="card_added_ability").resize((60,60))
 
 def getFront(name:str=""):
     return loadImage(type=os.path.join("cards","front"),name="card_front"+ ("_" if name else "") +name)
@@ -76,6 +94,9 @@ def getCost(type:str,count:int):
     if name: return loadImage(type="costs",name="cost_"+name)
     else: return None
 
+def getDecal(name:str):
+    return loadImage(type=os.path.join("cards","decal"),name="decal_"+name)
+
 # full card
 class Card:
     width = 125
@@ -89,7 +110,9 @@ class Card:
         damage:int, # -1 = no show
         health:int,  # -1 = no show
         abilities:list,
+        sacrisfied_abilities:list,
         cost:Image.Image, # can be None
+        decals:list,
         font_zh_cn:ImageFont.FreeTypeFont,
         font_en_us:ImageFont.FreeTypeFont
     ) -> None:
@@ -99,8 +122,10 @@ class Card:
         self.damage = damage
         self.health = health
         self.abilities = abilities
+        self.sacrisfied_abilities = sacrisfied_abilities
         self.cost = cost
         self.beast = beast
+        self.decals = decals
         self.font_zh_cn=font_zh_cn
         self.font_en_us=font_en_us
 
@@ -161,6 +186,7 @@ class Card:
             ab_count = 0
             ab_0 = None
             ab_1 = None
+            
         
         # oh, seems that everything for the front is ready
         # lets generate the final image for the front
@@ -175,11 +201,30 @@ class Card:
         elif ab_count == 2:
             front.paste(ab_0,(36,152),ab_0)
             front.paste(ab_1,(61,134),ab_1)
+
+        if len(self.sacrisfied_abilities):
+            # cool abilities! xd
+            if len(self.abilities) <= 0:
+                front.paste(sacrisfied_abilitiy,(35,125),sacrisfied_abilitiy)
+                front.paste(coolAbility(self.sacrisfied_abilities[0]),(45,135),self.sacrisfied_abilities[0].resize((40,40)))
+                self.sacrisfied_abilities.pop(0)
+            if len(self.sacrisfied_abilities) > 0:
+                # 1 => 14 38
+                front.paste(sacrisfied_abilitiy.resize((50,50)),(5,31),sacrisfied_abilitiy.resize((50,50)))
+                front.paste(coolAbility(self.sacrisfied_abilities[0],(30,30)),(15,41),self.sacrisfied_abilities[0].resize((30,30)))
+            if len(self.sacrisfied_abilities) >= 2:
+                # 2 => 99 38
+                front.paste(sacrisfied_abilitiy.resize((50,50)),(5,76),sacrisfied_abilitiy.resize((50,50)))
+                front.paste(coolAbility(self.sacrisfied_abilities[1],(30,30)),(15,86),self.sacrisfied_abilities[1].resize((30,30)))
         
         # cost
         if self.cost:
             x, y = 119 - self.cost.size[0], 18
             front.paste(self.cost,(x,y),self.cost)
+
+        # then decals
+        for i in self.decals:
+            front.paste(i,(0,0),i)
         
         # then we need to turn front into a image draw thing to put text on it
         draw_front = ImageDraw.Draw(front)
