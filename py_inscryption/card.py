@@ -149,10 +149,10 @@ class Card:
         show_damage = (self.damage != -1)
         show_health = (self.health != -1)
         
-        if show_damage: damage = generate_proper_text_image(str(self.damage), self.font_zh_cn, self.font_en_us,40,40)
+        if show_damage: damage = generate_proper_text_image(str(self.damage), self.font_zh_cn, self.font_en_us,40,60)
         else: damage = None
 
-        if show_health: health = generate_proper_text_image(str(self.health), self.font_zh_cn, self.font_en_us,40,40)
+        if show_health: health = generate_proper_text_image(str(self.health), self.font_zh_cn, self.font_en_us,40,60)
         else: health = None
         
         # name
@@ -232,9 +232,9 @@ class Card:
         draw_front.text(xy=(62,16),text=name.text,fill=(0,0,0),font=name.font,anchor="mm")
         # damage & health
         if show_damage:
-            draw_front.text(xy=(18,145),text=damage.text,fill=(0,0,0),font=damage.font,anchor="mm")
+            draw_front.text(xy=(19,150),text=damage.text,fill=(0,0,0),font=damage.font,anchor="mm")
         if show_health:
-            draw_front.text(xy=(105,165),text=health.text,fill=(0,0,0),font=health.font,anchor="mm")
+            draw_front.text(xy=(106,165),text=health.text,fill=(0,0,0),font=health.font,anchor="mm")
         
         return front, back
         
