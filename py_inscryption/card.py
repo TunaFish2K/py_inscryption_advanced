@@ -197,10 +197,10 @@ class Card:
 
         # abilities
         if ab_count == 1:
-            front.paste(ab_0,(36,135),ab_0)
+            front.paste(ab_0,(40,133),ab_0)
         elif ab_count == 2:
-            front.paste(ab_0,(36,152),ab_0)
-            front.paste(ab_1,(61,134),ab_1)
+            front.paste(ab_0,(32,150),ab_0)
+            front.paste(ab_1,(57,132),ab_1)
 
         if len(self.sacrisfied_abilities):
             # cool abilities! xd
@@ -219,8 +219,9 @@ class Card:
         
         # cost
         if self.cost:
-            x, y = 119 - self.cost.size[0], 18
-            front.paste(self.cost,(x,y),self.cost)
+            cost = self.cost.resize((math.floor(self.cost.size[0]*0.75),math.floor(self.cost.size[1]*0.75)))
+            x, y = 119 - cost.size[0], 23
+            front.paste(cost,(x,y),cost)
 
         # then decals
         for i in self.decals:
